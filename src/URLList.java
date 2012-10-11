@@ -1,4 +1,4 @@
-
+//This class contains a linked list node for the url linked list.
 public class URLList {
 	String url;
 	URLList next;
