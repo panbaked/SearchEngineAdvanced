@@ -13,7 +13,15 @@ class Searcher {
     	
     	return false;    		
     }
-    public static SimpleMap readHashMap(String filename) throws IOException {
+    public static boolean exists(BinarySearchTree bst, String word)
+    {
+    	int hash = word.hashCode();
+    	if(bst.find(hash, bst.root) != null)
+    		return true;
+    	
+    	return false;
+    }
+    public static SimpleMap buildHashMap(String filename) throws IOException {
     	String line, lastURL = "";
     	SimpleMap hashMap = new SimpleMap();
     	BufferedReader infile = new BufferedReader(new FileReader(filename));
@@ -44,6 +52,41 @@ class Searcher {
     	}
     	infile.close();
     	return hashMap;
+    }
+    
+    public static BinarySearchTree buildBST(String filename) throws IOException
+    {
+    	String line, lastURL = "";
+    	BinarySearchTree bst = new BinarySearchTree();
+    	BufferedReader infile = new BufferedReader(new FileReader(filename));
+    	
+    	line = infile.readLine();
+    	
+    	while(line != null)
+    	{
+    		if(isPage(line))
+    			lastURL = getURL(line);
+    		else
+    		{
+    			if(exists(bst, line))
+    			{
+					 URLList duplicateURLEntry = find(bst.find(line.hashCode(), bst.root).value, lastURL); //check for this url already exisiting with this name
+	    			 if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
+	    			 {
+	    				 bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
+	    			 }
+	    			
+    			}
+    			else
+    			{
+    				bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
+    			}
+    		}
+    		line = infile.readLine();
+    			
+    	}
+    	infile.close();
+    	return bst;
     }
     public static boolean isPage(String line)
     {
@@ -98,9 +141,12 @@ public class SearchCmd {
             System.exit(1);
         }
        
-        // Read the file and create the linked list
-        SimpleMap hashMap = Searcher.readHashMap(args[0]);
-
+        // Read the file and create the hash map
+        //SimpleMap hashMap = Searcher.buildHashMap(args[0]);
+        
+        //Read the file a create the BST
+        BinarySearchTree bst = Searcher.buildBST(args[0]);
+        
         // Ask for a word to search
         BufferedReader inuser =
             new BufferedReader (new InputStreamReader (System.in));
@@ -116,7 +162,7 @@ public class SearchCmd {
             } 
             else
             {
-            	processInput(name, hashMap);
+            	processInput(name, bst);
             }
         }
     }
@@ -143,6 +189,26 @@ public class SearchCmd {
     		
     }
     
+    public static void processInput(String line, BinarySearchTree bst)
+    {
+StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
+    	
+    	if(andTokenizer.countTokens() == 2) //We have two parts X AND Y
+    	{
+    		//processAnd(andTokenizer, bst);
+    		return;
+    	}
+    	StringTokenizer orTokenizer = new StringTokenizer(line, "OR");
+    	
+    	if(orTokenizer.countTokens() == 2) //We have two parts X OR Y
+    	{
+    		//processOr(orTokenizer, bst);
+    		return;
+    	}
+    	
+    	//We have a single query
+    	processSingleQuery(line, bst);    
+    }
     public static void processAnd(StringTokenizer tokenizer, SimpleMap hashMap)
     {
     	String x = tokenizer.nextToken();
@@ -156,7 +222,7 @@ public class SearchCmd {
     	Searcher.printURLs(commonURLs);
 
     }
-    
+   
     public static void processOr(StringTokenizer tokenizer, SimpleMap hashMap)
     {
     	System.out.println("Got an OR with X:"+tokenizer.nextToken()+" and Y:"+tokenizer.nextToken());
@@ -165,6 +231,24 @@ public class SearchCmd {
     public static void processSingleQuery(String line, SimpleMap hashMap)
     {
     	URLList queryResult = hashMap.get(line.hashCode());
+    	
+    	if(queryResult != null)
+		{
+			System.out.println ("The word \""+line+"\" has been found.");
+	        System.out.println("URLs linked to "+ line);
+
+    		Searcher.printURLs(queryResult);
+		}
+    	else
+    	{
+    		System.out.println ("The word \""+line+"\" has NOT been found.");
+    	}
+    	
+    }
+    
+    public static void processSingleQuery(String line, BinarySearchTree bst)
+    {
+    	URLList queryResult = bst.find(line.hashCode(), bst.root).value;
     	
     	if(queryResult != null)
 		{
