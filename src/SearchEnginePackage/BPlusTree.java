@@ -1,3 +1,5 @@
+package SearchEnginePackage;
+
 //used to keep track of promotions which need to float up towards the root upon insertion
 class BPTNodeInfo
 {
@@ -26,7 +28,7 @@ class InternalNode extends BPTNode
             //Cycle through the keys and see if we are smaller than one of them, this is where we are directed to the child node
             for(i = 0; i < nKeys; i++)
             {
-                if(key < keys[i])
+                if(key <= keys[i])
                     break; //We have found our path, it is to the left of key i
             }
             //if we did not find a path to the left of any keys it is all the way to the right
@@ -93,10 +95,9 @@ class InternalNode extends BPTNode
                     return true; //return to our parent that a promotion was required
                 }
 
-
             }
 
-            return false; //we failed for some reason
+            return false; //no promotion required we succeeded
 
 	}
 }
@@ -121,7 +122,7 @@ class LeafNode extends BPTNode
 			//Cycle through the keys and find if the key is smaller than another
 			for(i = 0; i < nKeys; i++)
 			{
-				if(key < keys[i])
+				if(key <= keys[i])
 				{
 					break; //stop here we will insert at position i
 				}
@@ -155,30 +156,31 @@ class LeafNode extends BPTNode
 		}
 		else
 		{
-			//We're full so split into two and float up the middle key to the parent
-			
-			//A new leaf is now required so we create that and make it our sibling
-			LeafNode newNode = new LeafNode();
-			newNode.sibling = sibling; //insert the new node into the sibling list
-			sibling = newNode;
-			
-			//now we move all of the keys and data higher than N/2+1 to the new node
-			int k = 0; //our index into the new node's arrays
-			for(j = BPlusTree.N/2+1; j <= BPlusTree.N; j++)
-			{
-				newNode.keys[k] = keys[j];
-				newNode.data[k] = data[j];
-			}
-			
-			newNode.nKeys = k;
-			
-			//setup the node to be promoted (sent to the parent)
-			promotionNode.key = keys[BPlusTree.N/2];
-			promotionNode.node = newNode;
-			
-			nKeys = BPlusTree.N/2; 
-			
-			return true; //we promoted successfully
+                    //We're full so split into two and float up the middle key to the parent
+
+                    //A new leaf is now required so we create that and make it our sibling
+                    LeafNode newNode = new LeafNode();
+                    newNode.sibling = sibling; //insert the new node into the sibling list
+                    sibling = newNode;
+
+                    //now we move all of the keys and data higher than N/2+1 to the new node
+                    int k = 0; //our index into the new node's arrays
+                    for(j = BPlusTree.N/2+1; j <= BPlusTree.N; j++)
+                    {
+                        newNode.keys[k] = keys[j];
+                        newNode.data[k] = data[j];
+                        k++;
+                    }
+
+                    newNode.nKeys = k;
+
+                    //setup the node to be promoted (sent to the parent)
+                    promotionNode.key = keys[BPlusTree.N/2];
+                    promotionNode.node = newNode;
+
+                    nKeys = BPlusTree.N/2; 
+
+                    return true; //we promoted successfully
 		}
 	}
 }
@@ -204,7 +206,7 @@ public class BPlusTree {
             {
                 if(key <= node.keys[i])
                 {
-                        break; //we found our child to navigate through
+                    break; //we found our child to navigate through
                 }
             }
 
@@ -218,8 +220,12 @@ public class BPlusTree {
                 LeafNode leafNode = (LeafNode)node;
 
                 for(int j = 0; j < node.nKeys; j++)
+                {
                     if(key == leafNode.keys[j])
-                            return ((LeafNode)node).data[i]; //we found it
+                    {
+                        return ((LeafNode)node).data[i]; //we found it
+                    }
+                }
             }
 
             return null;

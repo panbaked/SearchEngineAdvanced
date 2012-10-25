@@ -1,3 +1,5 @@
+package SearchEnginePackage;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -183,6 +185,7 @@ class Searcher {
 
 public class SearchCmd {
 
+    private static BPlusTree bTree;
     /*
     public static void main (String[] args) throws IOException {
         String name;
@@ -262,33 +265,10 @@ public class SearchCmd {
         BufferedReader inuser =
             new BufferedReader (new InputStreamReader (System.in));
         
-        boolean quit = false;
         return processInput(word, bTree);
         
     }
-    /*
-    public static void processInput(String line, SimpleMap hashMap)
-    {
-    	StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
-    	
-    	if(andTokenizer.countTokens() == 2) //We have two parts X AND Y
-    	{
-    		processAnd(andTokenizer, hashMap);
-    		return;
-    	}
-    	StringTokenizer orTokenizer = new StringTokenizer(line, "OR");
-    	
-    	if(orTokenizer.countTokens() == 2) //We have two parts X OR Y
-    	{
-    		processOr(orTokenizer, hashMap);
-    		return;
-    	}
-    	
-    	//We have a single query
-    	processSingleQuery(line, hashMap);    	
-    		
-    }
-    */
+ 
     public static String processInput(String line, BPlusTree bTree)
     {
         StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
