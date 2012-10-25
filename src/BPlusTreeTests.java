@@ -4,10 +4,17 @@ import org.junit.Test;
 
 
 public class BPlusTreeTests {
-
 	@Test
 	public void testFindInt() {
+            BPlusTree bTree = new BPlusTree();
 
+            bTree.insert(1, new URLList("One", null));
+            bTree.insert(2, new URLList("Two", null));
+            bTree.insert(3, new URLList("Three", null));
+
+            URLList list = bTree.find(1);
+            if(!list.url.equals("One"))
+                fail("Did not find the right entry");
 	}
 
 	@Test

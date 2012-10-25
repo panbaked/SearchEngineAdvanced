@@ -88,6 +88,46 @@ class Searcher {
     	infile.close();
     	return bst;
     }
+    
+    public static BPlusTree buildBTree(String filename) throws IOException
+    {
+    	String line, lastURL = "";
+    	BPlusTree bTree = new BPlusTree();
+    	BufferedReader infile = new BufferedReader(new FileReader(filename));
+    	
+    	line = infile.readLine();
+    	
+    	while(line != null)
+    	{
+    		if(isPage(line))
+                    lastURL = getURL(line);
+    		else
+    		{
+                    /*
+                        
+                    URLList list = bTree.find(line.hashCode());
+                    if(list != null)
+                    {
+                        URLList duplicateURLEntry = find(list, lastURL); //check for this url already exisiting with this name
+                        if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
+                        {
+                                bTree.insert(line.hashCode(), new URLList(lastURL, null));
+                        }
+
+                    }
+                    else
+                    {
+                            bTree.insert(line.hashCode(), new URLList(lastURL, null));
+                    }
+                    * */
+                    bTree.insert(line.hashCode(), new URLList(lastURL, null));
+    		}
+    		line = infile.readLine();
+    			
+    	}
+    	infile.close();
+    	return bTree;
+    }
     public static boolean isPage(String line)
     {
     	if(line.length() < 6)
@@ -128,10 +168,22 @@ class Searcher {
 		System.out.println("There were "+ i + " URLs attached.");		
 		
 	}
+    
+    public static String getURLString(URLList urlList)
+    {    	
+        String s = "";
+        while(urlList != null)
+        {
+            s += urlList.url + "\n";
+            urlList = urlList.next;
+        }
+        return s;
+    }
 }
 
 public class SearchCmd {
 
+    /*
     public static void main (String[] args) throws IOException {
         String name;
 
@@ -162,11 +214,59 @@ public class SearchCmd {
             } 
             else
             {
-            	processInput(name, bst);
+            	//processInput(name, bst);
             }
         }
     }
+    */
     
+    public static void main(String[] args)
+    {
+              /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(SearcherUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(SearcherUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(SearcherUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(SearcherUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new SearcherUI().setVisible(true);
+            }
+        });
+    }
+    public static String Search(String word, String filename) throws IOException
+    {
+        //Read the file a create the BST
+        BPlusTree bTree = Searcher.buildBTree(filename);
+        
+        // Ask for a word to search
+        BufferedReader inuser =
+            new BufferedReader (new InputStreamReader (System.in));
+        
+        boolean quit = false;
+        return processInput(word, bTree);
+        
+    }
+    /*
     public static void processInput(String line, SimpleMap hashMap)
     {
     	StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
@@ -188,38 +288,36 @@ public class SearchCmd {
     	processSingleQuery(line, hashMap);    	
     		
     }
-    
-    public static void processInput(String line, BinarySearchTree bst)
+    */
+    public static String processInput(String line, BPlusTree bTree)
     {
-StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
+        StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
     	
     	if(andTokenizer.countTokens() == 2) //We have two parts X AND Y
     	{
-    		//processAnd(andTokenizer, bst);
-    		return;
+    		return processAnd(andTokenizer, bTree);
     	}
     	StringTokenizer orTokenizer = new StringTokenizer(line, "OR");
     	
     	if(orTokenizer.countTokens() == 2) //We have two parts X OR Y
     	{
     		//processOr(orTokenizer, bst);
-    		return;
+    		//return processOr(orTokenizer, bTree);
     	}
     	
     	//We have a single query
-    	processSingleQuery(line, bst);    
+    	return processSingleQuery(line, bTree);    
     }
-    public static void processAnd(StringTokenizer tokenizer, SimpleMap hashMap)
+    public static String processAnd(StringTokenizer tokenizer, BPlusTree bTree)
     {
     	String x = tokenizer.nextToken();
     	String y = tokenizer.nextToken();
     	x = trimSpaces(x);
     	y = trimSpaces(y);
     	
-    	URLList commonURLs = findCommonURLs(x, y, hashMap);
+    	URLList commonURLs = findCommonURLs(x, y, bTree);
     	
-    	System.out.println("Got an AND with X:"+x+" and Y:"+y);
-    	Searcher.printURLs(commonURLs);
+        return Searcher.getURLString(commonURLs);
 
     }
    
@@ -228,60 +326,39 @@ StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
     	System.out.println("Got an OR with X:"+tokenizer.nextToken()+" and Y:"+tokenizer.nextToken());
     }
     
-    public static void processSingleQuery(String line, SimpleMap hashMap)
+    public static String processSingleQuery(String line, BPlusTree bTree)
     {
-    	URLList queryResult = hashMap.get(line.hashCode());
+    	URLList queryResult = bTree.find(line.hashCode());
     	
     	if(queryResult != null)
-		{
-			System.out.println ("The word \""+line+"\" has been found.");
-	        System.out.println("URLs linked to "+ line);
-
-    		Searcher.printURLs(queryResult);
-		}
+        {
+            return Searcher.getURLString(queryResult);
+        }
     	else
     	{
-    		System.out.println ("The word \""+line+"\" has NOT been found.");
+            return "The word \""+line+"\" has NOT been found.";
     	}
     	
     }
     
-    public static void processSingleQuery(String line, BinarySearchTree bst)
+    public static URLList findCommonURLs(String x, String y, BPlusTree bTree)
     {
-    	URLList queryResult = bst.find(line.hashCode(), bst.root).value;
-    	
-    	if(queryResult != null)
-		{
-			System.out.println ("The word \""+line+"\" has been found.");
-	        System.out.println("URLs linked to "+ line);
-
-    		Searcher.printURLs(queryResult);
-		}
-    	else
-    	{
-    		System.out.println ("The word \""+line+"\" has NOT been found.");
-    	}
-    	
-    }
-    public static URLList findCommonURLs(String x, String y, SimpleMap hashMap)
-    {
-    	URLList currentX = hashMap.get(x.hashCode());
+    	URLList currentX = bTree.find(x.hashCode());
     	
     	URLList returnList = null;
     	while(currentX != null)
     	{
-    		URLList currentY = hashMap.get(y.hashCode());
+    		URLList currentY = bTree.find(y.hashCode());
     		while(currentY != null)
     		{
-    			System.out.println("Checking:"+currentX.url+","+currentY.url);
-    			if(currentX.url.equals(currentY.url))
-    			{
-    				URLList newEntry = new URLList(currentX.url, returnList);
-    				returnList = newEntry; //insert at the beginning
-    			}
-    			currentY = currentY.next;
-    		}
-    		System.out.println("boop");
+                    System.out.println("Checking:"+currentX.url+","+currentY.url);
+                    if(currentX.url.equals(currentY.url))
+                    {
+                            URLList newEntry = new URLList(currentX.url, returnList);
+                            returnList = newEntry; //insert at the beginning
+                    }
+                    currentY = currentY.next;
+                }
     		currentX = currentX.next;
     	}
     	

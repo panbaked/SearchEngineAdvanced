@@ -19,85 +19,85 @@ class InternalNode extends BPTNode
 	@Override
 	public boolean insert(int key, URLList urlList, BPTNodeInfo promotionNode) 
 	{
-		//in this method i use toArray a bunch, I'm not sure of the overhead of this, but these arrays are from 2-4 in length
-		//so the damage shouldn't be too big
-		
-		int i; //keeps track of which child we navigate through to insert the new entry
-;
-		//Cycle through the keys and see if we are smaller than one of them, this is where we are directed to the child node
-		for(i = 0; i < nKeys; i++)
-		{
-			if(key < keys[i])
-				break; //We have found our path, it is to the left of key i
-		}
-		//if we did not find a path to the left of any keys it is all the way to the right
-		//note that we always have 1 more child than keys so this never fails
-		
-		//we then navigate through the i-th child and check if it required a promote
-		//this is the recursion step which eventually reaches the end of the tree
-		//if a promote is required this floats up towards the root
-		boolean promotionRequired = children[i].insert(key, urlList, promotionNode);
-		
-		//two options, no promotion (trivial) and promotion, when a promotion happens a key is moved from a child up to a parent
-		//this parent tries to accommodate the key, however if it is full it splits
-		//splitting involves find a median among the keys, the keys lower than the median are placed into a new left node
-		//and the keys higher than the median are placed into a new right node, the median key is placed into the parent's keys (promotion)
-		//this promotion can cause the parent to split, and so on until the root is eventually split and the tree grows in height by 1
-		
-		if(promotionRequired)
-		{
-			//we have the i-th child index
-			//the key is inserted at position i
-			//the child is inserted at position i+1 (the i+1 child belongs to the i key)
-			//so we shift every entry > i up to make space for the new key
-			
-			for(int j = nKeys; j > i; j--)
-			{
-				keys[j] = keys[j-1]; //shift key up
-				children[j+1] = children[j]; //shift child up
-			}
-			
-			keys[i] = promotionNode.key;
-			children[i+1] = promotionNode.node;
-			nKeys++;
-			
-			//now that we have grown we can check and see if we are big enough to require a split
-			if(nKeys <= BPlusTree.N)
-			{
-				//no splitting required
-				return false;
-			}
-			else
-			{
-				//we are full, so we must split into two nodes and promote our median key
-				//the middle key (N/2) is promoted
-				promotionNode.key = keys[BPlusTree.N/2];
-				
-				//Create the new node and fill it with keys > N/2+1
-				InternalNode newNode = new InternalNode();
-				
-				promotionNode.node = newNode;
-				//the next to iterators are stored outside the for so we can add in the final child 
-				int j; //index into this node's arrays
-				int k = 0; //this is our index into the newNode's array
-				for(j = BPlusTree.N/2+1; j <= BPlusTree.N; j++)
-				{
-					newNode.keys[k] = keys[j];
-					newNode.children[k] = children[j];
-					k++;
-				}
-				//and don't forget to add in the last child
-				newNode.children[k] = children[j]; 
-				newNode.nKeys = BPlusTree.N/2;
-				
-				return true; //return to our parent that a promotion was required
-			}
-			
+            //in this method i use toArray a bunch, I'm not sure of the overhead of this, but these arrays are from 2-4 in length
+            //so the damage shouldn't be too big
 
-		}
-		
-		return false; //we failed for some reason
-		
+            int i; //keeps track of which child we navigate through to insert the new entry
+            //Cycle through the keys and see if we are smaller than one of them, this is where we are directed to the child node
+            for(i = 0; i < nKeys; i++)
+            {
+                if(key < keys[i])
+                    break; //We have found our path, it is to the left of key i
+            }
+            //if we did not find a path to the left of any keys it is all the way to the right
+            //note that we always have 1 more child than keys so this never fails
+
+            //we then navigate through the i-th child and check if it required a promote
+            //this is the recursion step which eventually reaches the end of the tree
+            //if a promote is required this floats up towards the root
+            boolean promotionRequired = children[i].insert(key, urlList, promotionNode);
+
+            //two options, no promotion (trivial) and promotion, when a promotion happens a key is moved from a child up to a parent
+            //this parent tries to accommodate the key, however if it is full it splits
+            //splitting involves find a median among the keys, the keys lower than the median are placed into a new left node
+            //and the keys higher than the median are placed into a new right node, the median key is placed into the parent's keys (promotion)
+            //this promotion can cause the parent to split, and so on until the root is eventually split and the tree grows in height by 1
+
+            if(promotionRequired)
+            {
+                //we have the i-th child index
+                //the key is inserted at position i
+                //the child is inserted at position i+1 (the i+1 child belongs to the i key)
+                //so we shift every entry > i up to make space for the new key
+
+                for(int j = nKeys; j > i; j--)
+                {
+                    keys[j] = keys[j-1]; //shift key up
+                    children[j+1] = children[j]; //shift child up
+                }
+
+                keys[i] = promotionNode.key;
+                children[i+1] = promotionNode.node;
+                nKeys++;
+
+                //now that we have grown we can check and see if we are big enough to require a split
+                if(nKeys <= BPlusTree.N)
+                {
+                        //no splitting required
+                        return false;
+                }
+                else
+                {
+                    //we are full, so we must split into two nodes and promote our median key
+                    //the middle key (N/2) is promoted
+                    promotionNode.key = keys[BPlusTree.N/2];
+
+                    //Create the new node and fill it with keys > N/2+1
+                    InternalNode newNode = new InternalNode();
+
+                    promotionNode.node = newNode;
+                    //the next to iterators are stored outside the for so we can add in the final child 
+                    int j; //index into this node's arrays
+                    int k = 0; //this is our index into the newNode's array
+                    for(j = BPlusTree.N/2+1; j <= BPlusTree.N; j++)
+                    {
+                            newNode.keys[k] = keys[j];
+                            newNode.children[k] = children[j];
+                            k++;
+                    }
+                    //and don't forget to add in the last child
+                    newNode.children[k] = children[j]; 
+                    newNode.nKeys = BPlusTree.N/2;
+
+                    nKeys = BPlusTree.N/2;
+                    return true; //return to our parent that a promotion was required
+                }
+
+
+            }
+
+            return false; //we failed for some reason
+
 	}
 }
 
@@ -190,37 +190,39 @@ public class BPlusTree {
 	
 	public URLList find(int key)
 	{
-		return find(key, root);
+            return find(key, root);
 	}
 	
 	public URLList find(int key, BPTNode node)
 	{
-		//we step down through the tree until we reach a leaf
-		//each step if we are less than or equal to the key then we choose the left path
-		int i;
-		for(i = 0; i < node.nKeys; i++)
-		{
-			if(key <= node.keys[i])
-			{
-				break; //we found our child to navigate through
-			}
-		}
-		
-		//here we test if we are an internal node, if so we continue our recursion
-		if(node instanceof InternalNode)
-		{
-			return find(key, ((InternalNode)node).children[i]);
-		}
-		else if(node instanceof LeafNode)
-		{
-			LeafNode leafNode = (LeafNode)node;
-			
-			for(int j = 0; j < node.nKeys; j++)
-				if(key == leafNode.keys[j])
-					return ((LeafNode)node).data[i]; //we found it
-		}
+            if(node == null)
+                return null;
+            //we step down through the tree until we reach a leaf
+            //each step if we are less than or equal to the key then we choose the left path
+            int i;
+            for(i = 0; i < node.nKeys; i++)
+            {
+                if(key <= node.keys[i])
+                {
+                        break; //we found our child to navigate through
+                }
+            }
 
-		return null;
+            //here we test if we are an internal node, if so we continue our recursion
+            if(node instanceof InternalNode)
+            {
+                return find(key, ((InternalNode)node).children[i]);
+            }
+            else if(node instanceof LeafNode)
+            {
+                LeafNode leafNode = (LeafNode)node;
+
+                for(int j = 0; j < node.nKeys; j++)
+                    if(key == leafNode.keys[j])
+                            return ((LeafNode)node).data[i]; //we found it
+            }
+
+            return null;
 	}
 	
 	public void insert(int key, URLList urlList)
