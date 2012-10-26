@@ -1,3 +1,5 @@
+package SearchEnginePackage;
+
 
 class BSTNode
 {
@@ -41,11 +43,11 @@ public class BinarySearchTree
 	}
 	public void insert(BSTNode newNode)
 	{
-		if(root == null)
-			root = newNode;
-		else
-			insert(root, newNode);
-		
+            if(root == null)
+                root = newNode;
+            else
+                insert(root, newNode);
+
 	}
 	public void insert(BSTNode treeNode, BSTNode newNode)
 	{
