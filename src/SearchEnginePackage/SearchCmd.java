@@ -32,25 +32,27 @@ class Searcher {
     	
     	while(line != null)
     	{
-    		if(isPage(line))
-    			lastURL = getURL(line);
-    		else
-    		{
-    			if(exists(hashMap, line))
-    			{
-					 URLList duplicateURLEntry = find(hashMap.get(line.hashCode()), lastURL); //check for this url already exisiting with this name
-	    			 if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
-	    			 {
-	    				 hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
-	    			 }
-    			}
-    			else
-    			{
-    				hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
-    			}
-    		}
-    		line = infile.readLine();
-    			
+            if(isPage(line))
+            {
+                lastURL = getURL(line);
+            }
+            else
+            {
+                if(exists(hashMap, line))
+                {
+                     URLList duplicateURLEntry = find(hashMap.get(line.hashCode()), lastURL); //check for this url already exisiting with this name
+                     if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
+                     {
+                             hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
+                     }
+                }
+                else
+                {
+                        hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
+                }
+            }
+            line = infile.readLine();
+
     	}
     	infile.close();
     	return hashMap;
@@ -66,26 +68,28 @@ class Searcher {
     	
     	while(line != null)
     	{
-    		if(isPage(line))
-    			lastURL = getURL(line);
-    		else
-    		{
-    			if(exists(bst, line))
-    			{
-					 URLList duplicateURLEntry = find(bst.find(line.hashCode(), bst.root).value, lastURL); //check for this url already exisiting with this name
-	    			 if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
-	    			 {
-	    				 bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
-	    			 }
-	    			
-    			}
-    			else
-    			{
-    				bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
-    			}
-    		}
-    		line = infile.readLine();
-    			
+            if(isPage(line))
+            {
+                lastURL = getURL(line);
+            }
+            else
+            {
+                if(exists(bst, line))
+                {
+                    URLList duplicateURLEntry = find(bst.find(line.hashCode(), bst.root).value, lastURL); //check for this url already exisiting with this name
+                    if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
+                    {
+                            bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
+                    }
+
+                }
+                else
+                {
+                    bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
+                }
+            }
+            line = infile.readLine();
+
     	}
     	infile.close();
     	return bst;
@@ -101,31 +105,32 @@ class Searcher {
     	
     	while(line != null)
     	{
-    		if(isPage(line))
-                    lastURL = getURL(line);
-    		else
-    		{
-                    /*
-                        
-                    URLList list = bTree.find(line.hashCode());
-                    if(list != null)
+            if(isPage(line))
+            {
+                lastURL = getURL(line);
+            }
+            else
+            {
+                /*
+                URLList list = bTree.find(line.hashCode());
+                if(list != null)
+                {
+                    URLList duplicateURLEntry = find(list, lastURL); //check for this url already exisiting with this name
+                    if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
                     {
-                        URLList duplicateURLEntry = find(list, lastURL); //check for this url already exisiting with this name
-                        if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
-                        {
-                                bTree.insert(line.hashCode(), new URLList(lastURL, null));
-                        }
+                        bTree.insert(line.hashCode(), new URLList(lastURL, null));
+                    }
 
-                    }
-                    else
-                    {
-                            bTree.insert(line.hashCode(), new URLList(lastURL, null));
-                    }
-                    * */
+                }
+                else
+                {
                     bTree.insert(line.hashCode(), new URLList(lastURL, null));
-    		}
-    		line = infile.readLine();
-    			
+                }
+                * */
+                bTree.insert(line.hashCode(), new URLList(lastURL, null));
+            }
+            line = infile.readLine();
+
     	}
     	infile.close();
     	return bTree;
@@ -150,13 +155,15 @@ class Searcher {
     
     public static URLList find(URLList l, String url)
     {
-	   	 while (l != null) {
-	         if (l.url.equals (url)) {
-	             return l;
-	         }
-	         l = l.next;
-	     }
-		 return null;
+        while (l != null) 
+        {
+            if (l.url.equals (url)) 
+            {
+                return l;
+            }
+            l = l.next;
+        }
+        return null;
     }
     public static void printURLs(URLList urlList)
 	{    	
@@ -260,29 +267,28 @@ public class SearchCmd {
     {
         //Read the file a create the BST
         BPlusTree bTree = Searcher.buildBTree(filename);
-        
-        // Ask for a word to search
-        BufferedReader inuser =
-            new BufferedReader (new InputStreamReader (System.in));
-        
+  
         return processInput(word, bTree);
         
     }
  
+    public static String Search(String word, BPlusTree bTree)
+    {
+        return processInput(word, bTree);
+    }
     public static String processInput(String line, BPlusTree bTree)
     {
         StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
     	
     	if(andTokenizer.countTokens() == 2) //We have two parts X AND Y
     	{
-    		return processAnd(andTokenizer, bTree);
+            return processAnd(andTokenizer, bTree);
     	}
     	StringTokenizer orTokenizer = new StringTokenizer(line, "OR");
     	
     	if(orTokenizer.countTokens() == 2) //We have two parts X OR Y
     	{
-    		//processOr(orTokenizer, bst);
-    		//return processOr(orTokenizer, bTree);
+            return processOr(orTokenizer, bTree);
     	}
     	
     	//We have a single query
@@ -301,9 +307,27 @@ public class SearchCmd {
 
     }
    
-    public static void processOr(StringTokenizer tokenizer, SimpleMap hashMap)
+    public static String processOr(StringTokenizer tokenizer, BPlusTree bTree)
     {
-    	System.out.println("Got an OR with X:"+tokenizer.nextToken()+" and Y:"+tokenizer.nextToken());
+    	String x = tokenizer.nextToken();
+        String y = tokenizer.nextToken();
+        
+        x = trimSpaces(x);
+        y = trimSpaces(y);
+        
+        URLList xURLs = bTree.find(x.hashCode());
+        URLList yURLs = bTree.find(y.hashCode());
+        
+        
+        URLList current = xURLs;
+        while(current.next != null)
+        {
+            current = current.next;
+        }
+        current.next = yURLs;
+        
+        return Searcher.getURLString(xURLs);
+        
     }
     
     public static String processSingleQuery(String line, BPlusTree bTree)

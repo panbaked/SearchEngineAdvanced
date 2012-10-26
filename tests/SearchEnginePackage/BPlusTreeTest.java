@@ -161,4 +161,18 @@ public class BPlusTreeTest {
             System.out.println("Could not find the specified file.");
         }
     }
+    
+    @Test
+    public void testSearchSpeedLarge()
+    {
+        try
+        {
+            BPlusTree bTree = Searcher.buildBTree("large.txt");
+            SearchCmd.Search("IT", bTree);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Could not find the specified file.");
+        }
+    }
 }
