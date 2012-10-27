@@ -1,6 +1,10 @@
 
 /bin
 /.settings
+<<<<<<< HEAD
 /nbproject/private/
 /build/
 /dist/
+=======
+/SearchEngineAdvanced/nbproject/private/
+>>>>>>> dummy
