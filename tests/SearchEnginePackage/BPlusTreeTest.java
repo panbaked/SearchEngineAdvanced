@@ -1,8 +1,7 @@
 package SearchEnginePackage;
 
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Before;
+import java.util.HashSet;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -10,72 +9,51 @@ import static org.junit.Assert.*;
  *
  * @author bones
  */
+
 public class BPlusTreeTest {
     
     public BPlusTreeTest() {
     }
     
-    /**
-     * Test of find method, of class BPlusTree.
-     */
+
     @Test
     public void testFind_int() 
     {
         int key = 0;
         BPlusTree instance = new BPlusTree();
         URLList expResult = null;
-        URLList result = instance.find(key);
+        HashSet result = instance.find(key);
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of find method, of class BPlusTree.
-     */
+  
     @Test
     public void testFind_int_BPTNode() {
         System.out.println("find");
         int key = 0;
         BPlusTree instance = new BPlusTree();
-        instance.insert(key, new URLList("Zero", null));
-        
-        String expResult = "Zero";
-        String result = instance.find(key).url;
-        assertEquals(expResult, result);
+        instance.insert(key, 0);
+        boolean result = instance.find(key).contains(0);
+        assertEquals(true, result);
     }
 
-    /**
-     * Test of insert method, of class BPlusTree.
-     */
     @Test
     public void testInsert() {
         int key = 5;
-        URLList urlList = new URLList("Five", null);
+
         BPlusTree instance = new BPlusTree();
-        instance.insert(key, urlList);
+        instance.insert(key, 5);
         
         assertEquals(key, instance.root.keys[0]);
     }
-    
-    @Test
-    public void testFindInt() {
-        BPlusTree bTree = new BPlusTree();
-
-        bTree.insert(1, new URLList("One", null));
-        bTree.insert(2, new URLList("Two", null));
-        bTree.insert(3, new URLList("Three", null));
-
-        URLList list = bTree.find(1);
-        if(!list.url.equals("One"))
-            fail("Did not find the right entry");
-    }
-
+   
     @Test
     public void testInsertSimple() {
         BPlusTree bTree = new BPlusTree();
 
-        bTree.insert(1, new URLList("One", null));
-        bTree.insert(2, new URLList("Two", null));
-        bTree.insert(3, new URLList("Three", null));
+        bTree.insert(1, 1);
+        bTree.insert(2, 2);
+        bTree.insert(3, 3);
 
         if(!(bTree.root instanceof InternalNode))
         {
@@ -94,11 +72,11 @@ public class BPlusTreeTest {
     public void testInsertSimple2() {
         BPlusTree bTree = new BPlusTree();
 
-        bTree.insert(1, new URLList("One", null));
-        bTree.insert(2, new URLList("Two", null));
-        bTree.insert(3, new URLList("Three", null));
-        bTree.insert(27, new URLList("Twenty-Seven", null));
-        bTree.insert(-95, new URLList("Negative Ninety-Five", null));
+        bTree.insert(1, 1);
+        bTree.insert(2, 2);
+        bTree.insert(3, 3);
+        bTree.insert(27, 27);
+        bTree.insert(-95, -95);
         
         if(!(bTree.root instanceof InternalNode))
         {
@@ -119,9 +97,9 @@ public class BPlusTreeTest {
     public void testFindSimple() {
         BPlusTree bTree = new BPlusTree();
 
-        bTree.insert(1, new URLList("One", null));
-        bTree.insert(2, new URLList("Two", null));
-        bTree.insert(3, new URLList("Three", null));
+        bTree.insert(1, 1);
+        bTree.insert(2, 2);
+        bTree.insert(3, 3);
 
         if(!(bTree.root instanceof InternalNode))
         {
@@ -129,26 +107,31 @@ public class BPlusTreeTest {
         }
         else
         {
-            URLList list = bTree.find(3);
-            assertNotNull(list);
-            assertEquals("Three", list.url);
+            boolean hasThree = bTree.find(3).contains(3);
+            assertEquals(true, hasThree);
         }
     }
     
       @Test
     public void testBuildSpeedSmall() {
-        try {
-            Searcher.buildBTree("small.txt");
-        } catch (IOException e) {
+        try 
+        {
+            BPlusTree bTree = new BPlusTree("small.txt");
+        } 
+        catch (IOException e) 
+        {
             System.out.println("Could not find the specified file.");
         }
     }
 
     @Test
     public void testBuildSpeedMedium() {
-        try {
-            Searcher.buildBTree("medium.txt");
-        } catch (IOException e) {
+        try 
+        {
+            BPlusTree bTree = new BPlusTree("medium.txt");
+        } 
+        catch (IOException e) 
+        {
             System.out.println("Could not find the specified file.");
         }
     }
@@ -156,8 +139,10 @@ public class BPlusTreeTest {
     @Test
     public void testBuildSpeedLarge() {
         try {
-            Searcher.buildBTree("large.txt");
-        } catch (IOException e) {
+            BPlusTree bTree = new BPlusTree("large.txt");
+        } 
+        catch (IOException e) 
+        {
             System.out.println("Could not find the specified file.");
         }
     }
@@ -167,7 +152,7 @@ public class BPlusTreeTest {
     {
         try
         {
-            BPlusTree bTree = Searcher.buildBTree("large.txt");
+            BPlusTree bTree = new BPlusTree("large.txt");
             SearchCmd.Search("IT", bTree);
         }
         catch (IOException e)
