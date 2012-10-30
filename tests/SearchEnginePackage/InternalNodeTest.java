@@ -31,15 +31,6 @@ public class InternalNodeTest {
      */
     @Test
     public void testInsert() {
-        System.out.println("insert");
-        int key = 0;
-        URLList urlList = null;
-        BPTNodeInfo promotionNode = null;
-        InternalNode instance = new InternalNode();
-        boolean expResult = false;
-        boolean result = instance.insert(key, urlList, promotionNode);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+      
     }
 }
