@@ -3,11 +3,11 @@ package SearchEnginePackage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.StringTokenizer;
+import javax.swing.JTextArea;
 
 class Searcher {
-	
+
     public static boolean exists (SimpleMap hashMap, String word) {
     	int hash = word.hashCode();
     	if(hashMap.get(hash) != null)
@@ -95,46 +95,6 @@ class Searcher {
     	return bst;
     }
     
-    public static BPlusTree buildBTree(String filename) throws IOException
-    {
-    	String line, lastURL = "";
-    	BPlusTree bTree = new BPlusTree();
-    	BufferedReader infile = new BufferedReader(new FileReader(filename));
-    	
-    	line = infile.readLine();
-    	
-    	while(line != null)
-    	{
-            if(isPage(line))
-            {
-                lastURL = getURL(line);
-            }
-            else
-            {
-                /*
-                URLList list = bTree.find(line.hashCode());
-                if(list != null)
-                {
-                    URLList duplicateURLEntry = find(list, lastURL); //check for this url already exisiting with this name
-                    if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
-                    {
-                        bTree.insert(line.hashCode(), new URLList(lastURL, null));
-                    }
-
-                }
-                else
-                {
-                    bTree.insert(line.hashCode(), new URLList(lastURL, null));
-                }
-                * */
-                bTree.insert(line.hashCode(), new URLList(lastURL, null));
-            }
-            line = infile.readLine();
-
-    	}
-    	infile.close();
-    	return bTree;
-    }
     public static boolean isPage(String line)
     {
     	if(line.length() < 6)
@@ -192,46 +152,11 @@ class Searcher {
 
 public class SearchCmd {
 
-    private static BPlusTree bTree;
-    /*
-    public static void main (String[] args) throws IOException {
-        String name;
-
-        // Check that a filename has been given as argument
-        if (args.length != 1) {
-            System.out.println("Usage: java SearchCmd <datafile>");
-            System.exit(1);
-        }
-       
-        // Read the file and create the hash map
-        //SimpleMap hashMap = Searcher.buildHashMap(args[0]);
-        
-        //Read the file a create the BST
-        BinarySearchTree bst = Searcher.buildBST(args[0]);
-        
-        // Ask for a word to search
-        BufferedReader inuser =
-            new BufferedReader (new InputStreamReader (System.in));
-
-        System.out.println ("Hit return to exit.");
-        boolean quit = false;
-        while (!quit) {
-            System.out.print ("Search for: ");
-            name = inuser.readLine(); // Read a line from the terminal
-            if (name == null || name.length() == 0) 
-            {
-                quit = true;
-            } 
-            else
-            {
-            	//processInput(name, bst);
-            }
-        }
-    }
-    */
-    
+    private static BPlusTree theBTree;
+   
     public static void main(String[] args)
     {
+        
               /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -263,12 +188,37 @@ public class SearchCmd {
             }
         });
     }
-    public static String Search(String word, String filename) throws IOException
+    
+    public static void BuildTree(String filename, JTextArea textArea) throws IOException
     {
-        //Read the file a create the BST
-        BPlusTree bTree = Searcher.buildBTree(filename);
-  
-        return processInput(word, bTree);
+        BuildTreeTask task = new BuildTreeTask(filename, "build_tree_task", textArea);
+        try
+        {
+            task.execute();
+        }
+        catch(Exception e)
+        {
+            if(e instanceof IOException)
+            {
+                throw e;
+            }
+            else
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public static void SetBTree(BPlusTree bTree)
+    {
+        theBTree = bTree;
+    }
+    public static String Search(String word) throws IOException
+    {
+        if(theBTree != null)
+            return processInput(word, theBTree);
+        
+        return "The database is currently being built.";
         
     }
  
@@ -315,8 +265,8 @@ public class SearchCmd {
         x = trimSpaces(x);
         y = trimSpaces(y);
         
-        URLList xURLs = bTree.find(x.hashCode());
-        URLList yURLs = bTree.find(y.hashCode());
+        URLList xURLs = bTree.getURLs(x.hashCode());
+        URLList yURLs = bTree.getURLs(y.hashCode());
         
         
         URLList current = xURLs;
@@ -332,7 +282,7 @@ public class SearchCmd {
     
     public static String processSingleQuery(String line, BPlusTree bTree)
     {
-    	URLList queryResult = bTree.find(line.hashCode());
+    	URLList queryResult = bTree.getURLs(line.hashCode());
     	
     	if(queryResult != null)
         {
@@ -347,12 +297,12 @@ public class SearchCmd {
     
     public static URLList findCommonURLs(String x, String y, BPlusTree bTree)
     {
-    	URLList currentX = bTree.find(x.hashCode());
+    	URLList currentX = bTree.getURLs(x.hashCode());
     	
     	URLList returnList = null;
     	while(currentX != null)
     	{
-    		URLList currentY = bTree.find(y.hashCode());
+    		URLList currentY = bTree.getURLs(y.hashCode());
     		while(currentY != null)
     		{
                     System.out.println("Checking:"+currentX.url+","+currentY.url);
