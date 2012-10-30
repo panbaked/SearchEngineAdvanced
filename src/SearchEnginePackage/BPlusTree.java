@@ -5,7 +5,7 @@ package SearchEnginePackage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -106,8 +106,9 @@ class InternalNode extends BPTNode
         }
 
         return false; //no promotion required we succeeded
-
     }
+    
+    
 }
 
 class LeafNode extends BPTNode
@@ -137,10 +138,7 @@ class LeafNode extends BPTNode
                 }
                 else if(key == keys[i]) //we have a duplicate
                 {
-                    if(!data[i].contains(urlIndex))
-                    {
-                        data[i].add(urlIndex);
-                    }
+                    data[i].add(urlIndex);
                     /*URLListIndexed existingList = BPlusTree.find(data[i], url.urlIndex); //we check for an existing entry
                     if(existingList == null) //if one doesn't exist we add this url
                     {
@@ -408,24 +406,6 @@ public class BPlusTree {
         return null;
     }
     
-     /**
-     * A helper method to see if a given URLIndex exists within a URLListIndexed
-     * @param l the URLList to search
-     * @param urlIndex the URL index to search for
-     * @return the URLListIndexed if one is found, otherwise null
-     */
-    public static URLListIndexed find(URLListIndexed l, int urlIndex)
-    {
-        while (l != null) 
-        {
-            if (l.urlIndex == urlIndex) 
-            {
-                return l;
-            }
-            l = l.next;
-        }
-        return null;
-    }
     /**
      * Compiles a URLList with 
      * @param hashCode

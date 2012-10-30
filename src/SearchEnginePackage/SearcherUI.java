@@ -170,9 +170,8 @@ public class SearcherUI extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String word = jTextField1.getText();
-        String datafile = jTextField2.getText();
         try {
-            String result = SearchCmd.Search(word,datafile);
+            String result = SearchCmd.Search(word);
             
             jTextArea2.setText(result);
         } catch (IOException ex) {

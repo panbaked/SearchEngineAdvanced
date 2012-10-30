@@ -213,10 +213,8 @@ public class SearchCmd {
     {
         theBTree = bTree;
     }
-    public static String Search(String word, String filename) throws IOException
+    public static String Search(String word) throws IOException
     {
-        //Read the file a create the BST
-      //  BPlusTree bTree = Searcher.buildBTree(filename);
         if(theBTree != null)
             return processInput(word, theBTree);
         
