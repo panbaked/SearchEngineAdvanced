@@ -226,6 +226,7 @@ public class SearchCmd {
     {
         return processInput(word, bTree);
     }
+    
     public static String processInput(String line, BPlusTree bTree)
     {
         StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
@@ -244,6 +245,7 @@ public class SearchCmd {
     	//We have a single query
     	return processSingleQuery(line, bTree);    
     }
+    
     public static String processAnd(StringTokenizer tokenizer, BPlusTree bTree)
     {
     	String x = tokenizer.nextToken();
