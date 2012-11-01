@@ -8,22 +8,28 @@ import javax.swing.JTextArea;
 
 class Searcher {
 
-    public static boolean exists (SimpleMap hashMap, String word) {
+    public static boolean exists (SimpleMap hashMap, String word) 
+    {
     	int hash = word.hashCode();
     	if(hashMap.get(hash) != null)
+        {
     		return true;
-    	
+        }
     	return false;    		
     }
+    
     public static boolean exists(BinarySearchTree bst, String word)
     {
     	int hash = word.hashCode();
     	if(bst.find(hash, bst.root) != null)
+        {
     		return true;
-    	
+        }
     	return false;
     }
-    public static SimpleMap buildHashMap(String filename) throws IOException {
+    
+    public static SimpleMap buildHashMap(String filename) throws IOException 
+    {
     	String line, lastURL = "";
     	SimpleMap hashMap = new SimpleMap();
     	BufferedReader infile = new BufferedReader(new FileReader(filename));
@@ -43,16 +49,15 @@ class Searcher {
                      URLList duplicateURLEntry = find(hashMap.get(line.hashCode()), lastURL); //check for this url already exisiting with this name
                      if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
                      {
-                             hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
+                        hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
                      }
                 }
                 else
                 {
-                        hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
+                    hashMap.put(line, line.hashCode(), new URLList(lastURL, null));
                 }
             }
             line = infile.readLine();
-
     	}
     	infile.close();
     	return hashMap;
@@ -79,7 +84,7 @@ class Searcher {
                     URLList duplicateURLEntry = find(bst.find(line.hashCode(), bst.root).value, lastURL); //check for this url already exisiting with this name
                     if(duplicateURLEntry == null) //if it is not a duplicate we update the hashMap
                     {
-                            bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
+                        bst.insert(new BSTNode(line, line.hashCode(), new URLList(lastURL, null)));
                     }
 
                 }
@@ -89,7 +94,6 @@ class Searcher {
                 }
             }
             line = infile.readLine();
-
     	}
     	infile.close();
     	return bst;
@@ -98,18 +102,25 @@ class Searcher {
     public static boolean isPage(String line)
     {
     	if(line.length() < 6)
-    		return false;
-    	
+        {
+            return false;
+        }
     	if(line.substring(0, 6).equals("*PAGE:"))
-    		return true;
+        {
+            return true;
+        }
     	else
-    		return false;
+        {
+            return false;
+        }
     }
     
     public static String getURL(String pageLine)
     {
     	if(pageLine.length() < 6)
-    		return "";
+        {
+            return "";
+        }
     	return pageLine.substring(6);
     }
     
@@ -126,16 +137,15 @@ class Searcher {
         return null;
     }
     public static void printURLs(URLList urlList)
-	{    	
+    {    	
     	int i = 0;
-		while(urlList != null)
-		{
-			System.out.println(urlList.url);
-			urlList = urlList.next;
-			i++;
-		}
-		System.out.println("There were "+ i + " URLs attached.");		
-		
+            while(urlList != null)
+            {
+                System.out.println(urlList.url);
+                urlList = urlList.next;
+		i++;
+            }
+            System.out.println("There were "+ i + " URLs attached.");			
 	}
     
     public static String getURLString(URLList urlList)
@@ -189,7 +199,7 @@ public class SearchCmd {
         });
     }
     
-    public static void BuildTree(String filename, JTextArea textArea) throws IOException
+    public static void BuildTree(String filename, JTextArea textArea) throws IOException, Exception
     {
         BuildTreeTask task = new BuildTreeTask(filename, "build_tree_task", textArea);
         try
@@ -213,13 +223,14 @@ public class SearchCmd {
     {
         theBTree = bTree;
     }
+    
     public static String Search(String word) throws IOException
     {
         if(theBTree != null)
+        {
             return processInput(word, theBTree);
-        
+        }
         return "The database is currently being built.";
-        
     }
  
     public static String Search(String word, BPlusTree bTree)
@@ -229,13 +240,13 @@ public class SearchCmd {
     
     public static String processInput(String line, BPlusTree bTree)
     {
-        StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
+        StringTokenizer andTokenizer = new StringTokenizer(line, "ANDand");
     	
     	if(andTokenizer.countTokens() == 2) //We have two parts X AND Y
     	{
             return processAnd(andTokenizer, bTree);
     	}
-    	StringTokenizer orTokenizer = new StringTokenizer(line, "OR");
+    	StringTokenizer orTokenizer = new StringTokenizer(line, "ORor");
     	
     	if(orTokenizer.countTokens() == 2) //We have two parts X OR Y
     	{
@@ -256,7 +267,6 @@ public class SearchCmd {
     	URLList commonURLs = findCommonURLs(x, y, bTree);
     	
         return Searcher.getURLString(commonURLs);
-
     }
    
     public static String processOr(StringTokenizer tokenizer, BPlusTree bTree)
@@ -270,7 +280,6 @@ public class SearchCmd {
         URLList xURLs = bTree.getURLs(x.hashCode());
         URLList yURLs = bTree.getURLs(y.hashCode());
         
-        
         URLList current = xURLs;
         while(current.next != null)
         {
@@ -279,7 +288,6 @@ public class SearchCmd {
         current.next = yURLs;
         
         return Searcher.getURLString(xURLs);
-        
     }
     
     public static String processSingleQuery(String line, BPlusTree bTree)

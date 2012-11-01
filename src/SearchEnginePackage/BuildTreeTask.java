@@ -27,7 +27,6 @@ public class BuildTreeTask extends SwingWorker<BPlusTree, Integer>
     protected BPlusTree doInBackground() throws Exception 
     {
         return new BPlusTree(filename);
-     
     }
     
     @Override 
