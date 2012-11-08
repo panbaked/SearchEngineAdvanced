@@ -229,13 +229,13 @@ public class SearchCmd {
     }
     public static String processInput(String line, BPlusTree bTree)
     {
-        StringTokenizer andTokenizer = new StringTokenizer(line, "AND");
+        StringTokenizer andTokenizer = new StringTokenizer(line, "ANDand");
     	
     	if(andTokenizer.countTokens() == 2) //We have two parts X AND Y
     	{
             return processAnd(andTokenizer, bTree);
     	}
-    	StringTokenizer orTokenizer = new StringTokenizer(line, "OR");
+    	StringTokenizer orTokenizer = new StringTokenizer(line, "ORor");
     	
     	if(orTokenizer.countTokens() == 2) //We have two parts X OR Y
     	{
