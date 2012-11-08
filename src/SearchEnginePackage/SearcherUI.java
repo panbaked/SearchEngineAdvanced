@@ -15,6 +15,17 @@ public class SearcherUI extends javax.swing.JFrame {
      */
     public SearcherUI() {
         initComponents();
+        
+        String datafile = jTextField2.getText();
+        try
+        {
+            jTextArea2.setText("Processing a data file.");
+            SearchCmd.BuildTree(datafile, jTextArea2);
+        }
+        catch(IOException ex)
+        {
+            Logger.getLogger(SearcherUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
