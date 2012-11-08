@@ -13,7 +13,7 @@ public class SearcherUI extends javax.swing.JFrame {
     /**
      * Creates new form SearcherUI
      */
-    public SearcherUI() {
+    public SearcherUI() throws Exception {
         initComponents();
         
         String datafile = jTextField2.getText();
