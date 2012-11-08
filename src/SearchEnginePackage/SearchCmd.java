@@ -187,6 +187,7 @@ public class SearchCmd {
                 new SearcherUI().setVisible(true);
             }
         });
+        
     }
     
     public static void BuildTree(String filename, JTextArea textArea) throws IOException

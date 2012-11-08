@@ -1,5 +1,8 @@
 package SearchEnginePackage;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
@@ -24,7 +27,7 @@ public class BuildTreeTask extends SwingWorker<BPlusTree, Integer>
     }
 
     @Override
-    protected BPlusTree doInBackground() throws Exception 
+    protected BPlusTree doInBackground() throws Exception
     {
         return new BPlusTree(filename);
      
@@ -38,9 +41,14 @@ public class BuildTreeTask extends SwingWorker<BPlusTree, Integer>
             SearchCmd.SetBTree((BPlusTree)this.get());
             textArea.setText("File is ready for searching.");
         }
-        catch(Exception ignored)
+        catch(InterruptedException e)
         {
-            
+            textArea.setText("There was an interruption in the loading process.");
         }
+        catch(ExecutionException e)
+        {
+            textArea.setText(e.getCause().getMessage());
+        }
+        
     }
 }
