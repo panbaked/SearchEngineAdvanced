@@ -413,7 +413,8 @@ public class BPlusTree {
     public URLList getURLs(int hashCode)
     {
         HashSet<Integer> indices = find(hashCode);
-        
+        if(indices == null)
+            return null;
         URLList urlList = null;
         //I know this operation is slow for hashset's but it's better than thousands of contains on
         //a linked list
