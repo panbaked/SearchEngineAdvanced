@@ -194,7 +194,14 @@ public class SearchCmd {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SearcherUI().setVisible(true);
+                try
+                {
+                    new SearcherUI().setVisible(true);
+                }
+                catch(Exception e)
+                {
+                    System.out.println("There was an error in loading.");
+                }
             }
         });
         
