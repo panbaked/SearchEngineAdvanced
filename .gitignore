@@ -1,3 +1,14 @@
 
 /bin
 /.settings
+<<<<<<< HEAD
+/nbproject/private/
+/build/
+/dist/
+=======
+/SearchEngineAdvanced/nbproject/private/
+>>>>>>> dummy
+/02 - RETA Assignment 8/nbproject/private/
+/09 - RETA Assignment 9/nbproject/private/
+/09 - RETA Assignment 9/build/
+/10 - RETA Assignment 10/nbproject/private/
