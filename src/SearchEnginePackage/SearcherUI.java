@@ -91,7 +91,7 @@ public class SearcherUI extends javax.swing.JFrame {
 
         jLabel2.setText("File:");
 
-        jLabel3.setText("You can use 'and' / 'or' to search for combinationsor several words at the time. ");
+        jLabel3.setText("You can use 'and' / 'or' to search for combinations or several words at the time. ");
 
         jButton3.setText("Load");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
