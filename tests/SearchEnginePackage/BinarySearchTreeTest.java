@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package SearchEnginePackage;
 
 import java.io.IOException;
@@ -10,10 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author bones
- */
 public class BinarySearchTreeTest {
 
     public BinarySearchTreeTest() {

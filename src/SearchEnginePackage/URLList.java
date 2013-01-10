@@ -6,20 +6,17 @@ public class URLList {
     String url;
     URLList next;
 
-    URLList(String _url, URLList n)
-    {
+    URLList(String _url, URLList n) {
             url = _url;
             next = n;
     }
 }
 
-class URLListIndexed 
-{
+class URLListIndexed {
     int urlIndex;
     URLListIndexed next;
     
-    public URLListIndexed(int urlIndex, URLListIndexed next)
-    {
+    public URLListIndexed(int urlIndex, URLListIndexed next) {
         this.urlIndex = urlIndex;
         this.next = next;
     }

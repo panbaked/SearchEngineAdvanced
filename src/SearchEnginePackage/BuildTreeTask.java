@@ -1,7 +1,5 @@
 package SearchEnginePackage;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
@@ -10,44 +8,34 @@ import javax.swing.SwingWorker;
  *
  * @author bones
  */
-//This build task builds a new B+ tree as well as updates a progress bar for the 
-//file loading
-public class BuildTreeTask extends SwingWorker<BPlusTree, Integer>
-{
+// This build task builds a new B+ tree as well as updates a progress bar for the 
+// file loading
+public class BuildTreeTask extends SwingWorker<BPlusTree, Integer> {
     private String filename;
     private String threadname;
     private JTextArea textArea;
     private BPlusTree bTree;
     
-    public BuildTreeTask(String filename, String threadname, JTextArea textArea) 
-    {
+    public BuildTreeTask(String filename, String threadname, JTextArea textArea) {
         this.filename = filename;
         this.threadname = threadname;
         this.textArea = textArea;
     }
 
     @Override
-    protected BPlusTree doInBackground() throws Exception
-    {
+    protected BPlusTree doInBackground() throws Exception {
         return new BPlusTree(filename);
     }
     
     @Override 
-    public void done()
-    {
-        try
-        {
+    public void done() {
+        try {
             SearchCmd.SetBTree((BPlusTree)this.get());
             textArea.setText("File is ready for searching.");
-        }
-        catch(InterruptedException e)
-        {
+        } catch(InterruptedException e) {
             textArea.setText("There was an interruption in the loading process.");
-        }
-        catch(ExecutionException e)
-        {
+        } catch(ExecutionException e) {
             textArea.setText(e.getCause().getMessage());
         }
-        
     }
 }

@@ -5,11 +5,6 @@ import java.util.HashSet;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author bones
- */
-
 public class BPlusTreeTest {
     
     public BPlusTreeTest() {
@@ -62,9 +57,12 @@ public class BPlusTreeTest {
         else
         {
             InternalNode rootINode = (InternalNode)bTree.root;
-            assertEquals(2, rootINode.keys[0]); //the root contains the key 0
-            assertEquals(3, rootINode.children[1].keys[0]); //the right child contains the key 1
-            assertEquals(1, rootINode.children[0].keys[0]); //the left child contains the key -1
+            //the root contains the key 0
+            assertEquals(2, rootINode.keys[0]); 
+            //the right child contains the key 1
+            assertEquals(3, rootINode.children[1].keys[0]); 
+            //the left child contains the key -1
+            assertEquals(1, rootINode.children[0].keys[0]); 
         }
     }
     
@@ -85,11 +83,16 @@ public class BPlusTreeTest {
         else
         {
             InternalNode rootINode = (InternalNode)bTree.root;
-            assertEquals(2, rootINode.keys[0]); //the root contains the key 0
-            assertEquals(3, rootINode.children[1].keys[0]); //the right inner child contains the key 3
-            assertEquals(-95, rootINode.children[0].keys[0]); //the left outer child is -95
-            assertEquals(1, rootINode.children[0].keys[1]); //the left inner child is 1
-            assertEquals(27, rootINode.children[1].keys[1]); //the right most child is 27
+            //the root contains the key 0
+            assertEquals(2, rootINode.keys[0]); 
+            //the right inner child contains the key 3
+            assertEquals(3, rootINode.children[1].keys[0]); 
+            //the left outer child is -95
+            assertEquals(-95, rootINode.children[0].keys[0]); 
+            //the left inner child is 1
+            assertEquals(1, rootINode.children[0].keys[1]); 
+            //the right most child is 27
+            assertEquals(27, rootINode.children[1].keys[1]); 
         }
     }
     
